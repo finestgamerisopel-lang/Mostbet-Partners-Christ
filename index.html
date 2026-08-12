@@ -123,12 +123,29 @@
   nav.links{display:flex;gap:24px;font-size:14px;font-weight:600;color:rgba(255,255,255,.62);}
   nav.links a:hover{color:#fff;}
   .nav-right{display:flex;align-items:center;gap:12px;}
-  .lang-switch{display:flex;gap:2px;background:rgba(255,255,255,0.07);padding:4px;border-radius:999px;border:1px solid var(--border-dark);}
-  .lang-btn{
-    border:none;background:transparent;padding:6px 9px;border-radius:999px;font-size:12.5px;font-weight:700;
-    cursor:pointer;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:6px;
+  .lang-switch{position:relative;}
+  .lang-current{
+    display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.07);border:1px solid var(--border-dark);
+    padding:7px 12px;border-radius:999px;cursor:pointer;color:#fff;font-size:12.5px;font-weight:700;font-family:var(--font-main);
   }
-  .lang-btn.active{background:#fff;color:var(--black);}
+  .lang-current .lc-caret{color:rgba(255,255,255,.55);transition:transform .15s ease;flex:none;}
+  .lang-switch.open .lang-current .lc-caret{transform:rotate(180deg);}
+  .lang-menu{
+    position:absolute;top:calc(100% + 8px);inset-inline-end:0;min-width:172px;
+    background:#141210;border:1px solid var(--border-dark-2);border-radius:14px;padding:6px;
+    box-shadow:0 18px 40px rgba(0,0,0,.5);
+    display:flex;flex-direction:column;gap:1px;
+    opacity:0;visibility:hidden;transform:translateY(-6px);
+    transition:opacity .15s ease, transform .15s ease, visibility .15s;
+    max-height:min(60vh,420px);overflow-y:auto;z-index:60;
+  }
+  .lang-switch.open .lang-menu{opacity:1;visibility:visible;transform:translateY(0);}
+  .lang-opt{
+    display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;border:none;background:transparent;
+    color:rgba(255,255,255,.78);font-size:13.5px;font-weight:600;cursor:pointer;text-align:start;width:100%;font-family:var(--font-main);
+  }
+  .lang-opt:hover{background:rgba(255,255,255,.06);color:#fff;}
+  .lang-opt.active{background:var(--orange-wash);color:#fff;}
   .btn{
     display:inline-flex;align-items:center;gap:8px;justify-content:center;
     padding:12px 22px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;border:none;
@@ -385,6 +402,33 @@
       <polygon points="15,5.5 16.06,8.54 19.28,8.61 16.71,10.56 17.65,13.64 15,11.8 12.35,13.64 13.29,10.56 10.72,8.61 13.94,8.54"
                fill="none" stroke="#006233" stroke-width="0.9"/>
     </symbol>
+    <symbol id="flag-in" viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#fff"/>
+      <rect width="30" height="6.67" fill="#FF9933"/>
+      <rect y="13.33" width="30" height="6.67" fill="#138808"/>
+      <circle cx="15" cy="10" r="2.1" fill="none" stroke="#000080" stroke-width="0.45"/>
+      <circle cx="15" cy="10" r="0.45" fill="#000080"/>
+    </symbol>
+    <symbol id="flag-mx" viewBox="0 0 30 20">
+      <rect width="10" height="20" fill="#006847"/>
+      <rect x="10" width="10" height="20" fill="#fff"/>
+      <rect x="20" width="10" height="20" fill="#ce1126"/>
+      <circle cx="15" cy="10" r="1.6" fill="#8B5A2B"/>
+    </symbol>
+    <symbol id="flag-br" viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#009739"/>
+      <polygon points="15,3 27,10 15,17 3,10" fill="#FEDD00"/>
+      <circle cx="15" cy="10" r="4" fill="#012169"/>
+    </symbol>
+    <symbol id="flag-bd" viewBox="0 0 30 20">
+      <rect width="30" height="20" fill="#006a4e"/>
+      <circle cx="13" cy="10" r="5" fill="#f42a41"/>
+    </symbol>
+    <symbol id="flag-fr" viewBox="0 0 30 20">
+      <rect width="10" height="20" fill="#0055A4"/>
+      <rect x="10" width="10" height="20" fill="#fff"/>
+      <rect x="20" width="10" height="20" fill="#EF4135"/>
+    </symbol>
   </defs>
 </svg>
 
@@ -399,10 +443,22 @@
     </nav>
     <div class="nav-right">
       <div class="lang-switch" id="langSwitch">
-        <button class="lang-btn" data-lang="ru"><svg class="flag"><use href="#flag-ru"/></svg>RU</button>
-        <button class="lang-btn" data-lang="en"><svg class="flag"><use href="#flag-gb"/></svg>EN</button>
-        <button class="lang-btn" data-lang="uz"><svg class="flag"><use href="#flag-uz"/></svg>UZ</button>
-        <button class="lang-btn" data-lang="ar"><svg class="flag"><use href="#flag-ma"/></svg>AR</button>
+        <button class="lang-current" id="langCurrentBtn" type="button" aria-haspopup="true" aria-expanded="false">
+          <svg class="flag"><use href="#flag-ru" id="langCurrentUse"/></svg>
+          <span id="langCurrentCode">RU</span>
+          <svg class="lc-caret" viewBox="0 0 10 6" width="9" height="6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lang-menu" id="langMenu" role="menu">
+          <button class="lang-opt" data-lang="ru" role="menuitem"><svg class="flag"><use href="#flag-ru"/></svg><span>Русский</span></button>
+          <button class="lang-opt" data-lang="en" role="menuitem"><svg class="flag"><use href="#flag-gb"/></svg><span>English</span></button>
+          <button class="lang-opt" data-lang="uz" role="menuitem"><svg class="flag"><use href="#flag-uz"/></svg><span>O'zbekcha</span></button>
+          <button class="lang-opt" data-lang="ar" role="menuitem"><svg class="flag"><use href="#flag-ma"/></svg><span>العربية</span></button>
+          <button class="lang-opt" data-lang="hi" role="menuitem"><svg class="flag"><use href="#flag-in"/></svg><span>हिन्दी</span></button>
+          <button class="lang-opt" data-lang="es" role="menuitem"><svg class="flag"><use href="#flag-mx"/></svg><span>Español</span></button>
+          <button class="lang-opt" data-lang="pt" role="menuitem"><svg class="flag"><use href="#flag-br"/></svg><span>Português</span></button>
+          <button class="lang-opt" data-lang="bn" role="menuitem"><svg class="flag"><use href="#flag-bd"/></svg><span>বাংলা</span></button>
+          <button class="lang-opt" data-lang="fr" role="menuitem"><svg class="flag"><use href="#flag-fr"/></svg><span>Français</span></button>
+        </div>
       </div>
       <a class="btn btn-primary nav-cta" href="https://t.me/MostPartners_Christ" target="_blank" rel="noopener" data-i18n="nav_cta">Написать в Telegram</a>
     </div>
@@ -842,6 +898,276 @@ const I18N = {
     footer_product_link:"المنتج: Mostbet.com ↗", footer_register_link:"التسجيل كشريك ↗",
     footer_disclaimer:"هذا المحتوى موجّه للشركاء ومتخصصي جلب الزوار (+18). وهو ليس عرضاً موجهاً للاعبين.",
     footer_rights:"© Mostbet Partners"
+  },
+  hi: {
+    nav_case:"केस स्टडी", nav_models:"RS vs Fix", nav_offer:"हम क्या देते हैं", nav_contacts:"संपर्क", nav_cta:"Telegram पर लिखें",
+    hero_badge:"MOSTBET PARTNERS · एफिलिएट प्रोग्राम",
+    hero_title:"एक खिलाड़ी लाओ, महीनों और सालों तक कमाओ",
+    hero_subtitle:"भले ही तुम अकेले चैनल चलाते हो या स्ट्रीम करते हो, यह काफी है। एक बार खिलाड़ी लाओ, जब तक वह खेलता रहे, हर महीने कमाई मिलती रहेगी।",
+    hero_cta_primary:"पार्टनर बनें", hero_cta_secondary:"केस स्टडी देखें ↓",
+    hero_chip_1:"निच में सबसे ज़्यादा खोजा जाने वाला ब्रांड", hero_chip_2:"हर दिन पेआउट", hero_chip_3:"नेगेटिव कैरीओवर नहीं",
+    hero_stat_label:"हर खिलाड़ी से RevShare", hero_stat_value:"जीवनभर", hero_stat_note:"ऊँचा, बिना सीमा वाला RS, हर महीने बढ़ता है",
+    hero_stat_foot_1:"पेआउट · हर दिन", hero_stat_foot_2:"कोई सीमा नहीं",
+    case_kicker:"असली केस", case_title:"प्रेजेंटेशन की स्लाइड नहीं, हमारे पार्टनर का असली डैशबोर्ड",
+    case_subtitle:"कमाई कैसे होती है, इसका जीवंत सबूत: हमारे एक पार्टनर का असली डैशबोर्ड।",
+    step1_title:"लिंक पर क्लिक", step1_text:"खिलाड़ी साइन अप करता है और सिस्टम में हमेशा के लिए पार्टनर से जुड़ जाता है।",
+    step2_title:"गेमप्ले और डिपॉज़िट", step2_text:"खिलाड़ी हर महीने अपना बैलेंस टॉप अप करता है और खेलता है।",
+    step3_title:"तुम्हारा %, जीवनभर", step3_text:"जब तक खिलाड़ी सक्रिय रहता है, हर डिपॉज़िट से तुम्हें हिस्सा मिलता है।",
+    case_shot_badge:"असली स्क्रीनशॉट · पार्टनर डैशबोर्ड", case_shot_alt:"Mostbet Partners के एक पार्टनर डैशबोर्ड का स्क्रीनशॉट",
+    case_real_stat1_label:"लाए गए खिलाड़ी", case_real_stat2_label:"खिलाड़ियों की डिपॉज़िट राशि", case_real_stat3_label:"पार्टनर की कमाई, अभी भी बढ़ रही है",
+    case_real_note:"हमारे एक पार्टनर के डैशबोर्ड का स्क्रीनशॉट। असली आँकड़े, कोई इलस्ट्रेशन नहीं।",
+    chart_legend_rs:"RevShare (संचयी)", chart_legend_fix:"CPA / Fix (एकमुश्त)",
+    chart_caption:"एक खिलाड़ी कोहॉर्ट से संचित कमाई, $ · क्षैतिज अक्ष, महीने (1–12)",
+    chart_stat_1_label:"कोहॉर्ट के लिए FIX", chart_stat_1_value:"$1,440, बस इतना ही, हमेशा के लिए",
+    chart_stat_2_label:"12 महीनों बाद RS", chart_stat_2_value:"$4,820, और बढ़ता जा रहा है",
+    chart_stat_3_label:"जहाँ RS, FIX से आगे निकलता है", chart_stat_3_value:"पहले ही महीने 2 में",
+    models_kicker:"सहयोग के मॉडल", models_title:"RS, CPA/Fix और हाइब्रिड, फ़र्क़ क्या है",
+    models_subtitle:"हम तीन मॉडल पर काम करते हैं और तुम्हारे ट्रैफ़िक के लिए सही मॉडल चुनने में मदद करेंगे, लेकिन हमारे ज़्यादातर टॉप पार्टनर मानते हैं कि लंबे समय में RS ज़्यादा फ़ायदेमंद है।",
+    models_verdict:"हमारे ज़्यादातर टॉप पार्टनर यही कहते हैं: RS पर स्विच करने से असीमित कमाई मिलती है, जो नए निवेश के बिना भी आती रहती है। कई पार्टनर पहले ही Fix से RS पर स्विच कर चुके हैं।",
+    why_kicker:"MOSTBET क्यों", why_title:"एक ऐसा प्रोडक्ट जो खुद खिलाड़ी को बेचता है",
+    why_subtitle:"प्रोडक्ट का कन्वर्ज़न और रिटेंशन जितना ज़्यादा होगा, हर लाए गए खिलाड़ी से तुम्हारी कमाई उतनी ही ज़्यादा होगी।",
+    why_highlight_title:"खिलाड़ी खुद हमें ढूंढते हैं", why_highlight_text:"Mostbet इस निच में सबसे ज़्यादा खोजे जाने वाले ब्रांड्स में से एक है, और हम लगातार मीडिया विज्ञापन में निवेश करते हैं। जितनी ज़्यादा ऑर्गेनिक डिमांड, तुम्हारे ट्रैफ़िक पर उतना ही ज़्यादा कन्वर्ज़न।",
+    why_point1_title:"स्पोर्ट्स + ईस्पोर्ट्स + कैसीनो", why_point1_text:"लाइव बेटिंग और सैकड़ों गेम प्रोवाइडर, हर ऑडियंस के लिए कुछ न कुछ मौजूद है।",
+    why_point2_title:"प्रोमो जो खिलाड़ियों को रोके रखते हैं", why_point2_text:"व्हील ऑफ़ फॉर्च्यून और वर्ल्ड कप 2026 कैंपेन, खिलाड़ी बार-बार लौटते हैं, और तुम्हारा RS बढ़ता रहता है।",
+    why_point4_title:"खिलाड़ियों को तेज़ पेआउट", why_point4_text:"खिलाड़ी शायद ही कभी किसी कॉम्पिटिटर के पास जाते हैं, वे लंबे समय तक तुम्हारी कमाई का ज़रिया बने रहते हैं।",
+    why_point6_title:"24/7 पारदर्शी आँकड़े", why_point6_text:"साइन-अप, डिपॉज़िट और कमाई, रियल टाइम में, सीधे तुम्हारे डैशबोर्ड में।",
+    offer_kicker:"हमसे तुम्हें क्या मिलता है", offer_title:"सिर्फ़ एक लिंक नहीं, कमाने के लिए पूरा टूलकिट",
+    offer_subtitle:"हम तुम्हें वह सब कुछ देते हैं जिससे तुम्हारा ट्रैफ़िक पहले दिन से ही अधिकतम कमाई दे सके।",
+    offer_card1_title:"पर्सनल डिज़ाइनर", offer_card1_text:"तुम्हारे प्लेटफ़ॉर्म और GEO के हिसाब से क्रिएटिव्स, कोई टेम्पलेट नहीं, बल्कि कुछ ऐसा जो सच में कन्वर्ट करे।",
+    offer_card2_title:"किसी भी फ़ॉर्मैट के लिए बैनर", offer_card2_text:"तुम्हारी साइट, Telegram और सोशल मीडिया के लिए तैयार और कस्टम बैनर, तुम्हारी ज़रूरत की भाषा में।",
+    offer_card3_title:"प्रोमो कोड", offer_card3_text:"ऑटो-अप्लाई वाले पर्सनल प्रोमो कोड, यह ट्रैक करना आसान कि तुम्हारा ट्रैफ़िक क्या ला रहा है।",
+    offer_card4_title:"ब्रांडेड APK", offer_card4_text:"तुम्हारे लिंक से जुड़ा मोबाइल ऐप, वेबसाइट से ज़्यादा कन्वर्ज़न।",
+    offer_card5_title:"सपोर्ट और पर्सनल मैनेजर", offer_card5_text:"तेज़ जवाब, GEO और ऑप्टिमाइज़ेशन में मदद, 24/7।",
+    offer_card6_title:"हर दिन पेआउट", offer_card6_text:"हफ़्तों इंतज़ार नहीं, तुम्हारी कमाई हर दिन निकलती है।",
+    cmp_kicker:"हम VS मार्केट", cmp_title:"1xBet, 1win और Linebet के मुकाबले हम कैसे हैं",
+    cmp_subtitle:"ईमानदार, तथ्यों पर आधारित तुलना। असल फ़र्क़ यही है।",
+    cmp_highlight_title:"हर दिन पेआउट, कोई नेगेटिव बैलेंस नहीं",
+    cmp_highlight_text:"1xBet, 1win और Linebet हफ़्ते में एक बार पेआउट करते हैं, और नेगेटिव बैलेंस अगली अवधि में कैरी हो जाता है। हमारे साथ, पेआउट हर दिन होता है, और तुम्हारी कमाई का हर डॉलर तुम्हारा ही रहता है।",
+    cmp_card1_them:"RS 40% तक, साप्ताहिक पेआउट, नेगेटिव बैलेंस कैरी होता है।", cmp_card1_us:"हमारे साथ: रोज़ाना पेआउट, कोई कैरीओवर नहीं",
+    cmp_card2_them:"मज़बूत क्रिएटिव्स और सपोर्ट, लेकिन साप्ताहिक पेआउट (CPA को छोड़कर) और नेगेटिव बैलेंस कैरी होता है।", cmp_card2_us:"हमारे साथ: हर पार्टनर को रोज़ाना पेआउट, और कोई नेगेटिव कैरीओवर नहीं",
+    cmp_card3_them:"RS 25% से 50% तक, साप्ताहिक पेआउट, नेगेटिव बैलेंस कैरी होता है।", cmp_card3_us:"हमारे साथ: रोज़ाना पेआउट, कोई कैरीओवर नहीं, और एक पर्सनल डिज़ाइनर भी",
+    cta_title:"क्या तुम हर खिलाड़ी से जीवनभर कमाने के लिए तैयार हो?", cta_subtitle:"सीधे मुझे लिखो, मैं तुम्हारे ट्रैफ़िक के लिए मॉडल, रेट और मटेरियल तय कर दूंगा।", cta_button:"Telegram पर लिखें",
+    footer_text:"दुनियाभर के वेबमास्टर्स और मीडिया बायर्स के साथ काम करता हूं। जवाब मैं खुद देता हूं।",
+    footer_contact_label:"संपर्क करें", footer_tg_prefix:"लिखें",
+    footer_product_link:"प्रोडक्ट: Mostbet.com ↗", footer_register_link:"पार्टनर रजिस्ट्रेशन ↗",
+    footer_disclaimer:"यह सामग्री पार्टनर्स और ट्रैफ़िक प्रोफ़ेशनल्स के लिए है (18+)। यह खिलाड़ियों के लिए कोई ऑफ़र नहीं है।",
+    footer_rights:"© Mostbet Partners"
+  },
+  es: {
+    nav_case:"Caso de éxito", nav_models:"RS vs Fix", nav_offer:"Qué te damos", nav_contacts:"Contacto", nav_cta:"Escribir por Telegram",
+    hero_badge:"MOSTBET PARTNERS · PROGRAMA DE AFILIADOS",
+    hero_title:"Trae un jugador, cobra por meses y años",
+    hero_subtitle:"Aunque manejes tu canal o hagas streaming tú solo, con eso basta. Trae un jugador una vez, y cobras cada mes mientras siga jugando.",
+    hero_cta_primary:"Hazte Partner", hero_cta_secondary:"Ver el caso ↓",
+    hero_chip_1:"TOP en demanda del nicho", hero_chip_2:"Pagos diarios", hero_chip_3:"Sin arrastre de saldo negativo",
+    hero_stat_label:"RevShare de cada jugador", hero_stat_value:"De por vida", hero_stat_note:"RS alto, sin techo, crece cada mes",
+    hero_stat_foot_1:"Pagos · todos los días", hero_stat_foot_2:"Sin límite",
+    case_kicker:"CASO REAL", case_title:"No es una imagen de una presentación, es el panel real de nuestro partner",
+    case_subtitle:"Cómo funciona el ingreso, con prueba en vivo: el panel real de uno de nuestros partners.",
+    step1_title:"Clic en el enlace", step1_text:"El jugador se registra y queda vinculado al partner en el sistema para siempre.",
+    step2_title:"Juego y depósitos", step2_text:"Cada mes el jugador recarga su saldo y juega.",
+    step3_title:"Tu %, de por vida", step3_text:"Recibes una parte de cada depósito mientras el jugador siga activo.",
+    case_shot_badge:"Captura real · panel de un partner", case_shot_alt:"Captura de pantalla del panel de un partner de Mostbet Partners",
+    case_real_stat1_label:"JUGADORES TRAÍDOS", case_real_stat2_label:"VOLUMEN DE DEPÓSITOS DE JUGADORES", case_real_stat3_label:"INGRESO DEL PARTNER, SIGUE CRECIENDO",
+    case_real_note:"Captura del panel de uno de nuestros partners. Cifras reales, no una ilustración.",
+    chart_legend_rs:"RevShare (acumulado)", chart_legend_fix:"CPA / Fix (pago único)",
+    chart_caption:"Ingreso acumulado de una cohorte de jugadores, $ · eje horizontal, meses (1–12)",
+    chart_stat_1_label:"FIX POR LA COHORTE", chart_stat_1_value:"$1,440, y eso es todo, para siempre",
+    chart_stat_2_label:"RS DESPUÉS DE 12 MESES", chart_stat_2_value:"$4,820, y sigue creciendo",
+    chart_stat_3_label:"DÓNDE RS SUPERA A FIX", chart_stat_3_value:"Ya en el mes 2",
+    models_kicker:"MODELOS DE COLABORACIÓN", models_title:"RS, CPA/Fix e híbrido, cuál es la diferencia",
+    models_subtitle:"Trabajamos con tres modelos y te ayudamos a elegir el que mejor le va a tu tráfico, pero la mayoría de nuestros top partners coincide en que el RS rinde más a largo plazo.",
+    models_verdict:"Lo que dicen la mayoría de nuestros top partners: pasarse a RS te da un ingreso ilimitado que sigue entrando incluso sin nueva inversión. Muchos partners ya se pasaron de Fix a RS.",
+    why_kicker:"POR QUÉ MOSTBET", why_title:"Un producto que se vende solo al jugador",
+    why_subtitle:"Cuanto mayor la conversión y retención del producto, mayor tu ingreso por cada jugador que traigas.",
+    why_highlight_title:"Los jugadores nos buscan solos", why_highlight_text:"Mostbet es una de las marcas más buscadas del nicho, y seguimos invirtiendo en publicidad. Más demanda orgánica significa más conversión en tu tráfico.",
+    why_point1_title:"Deportes + esports + casino", why_point1_text:"Apuestas en vivo y cientos de proveedores de juegos, hay algo para cada audiencia.",
+    why_point2_title:"Promos que sí retienen", why_point2_text:"Rueda de la Fortuna y campañas del Mundial 2026, el jugador vuelve una y otra vez, y tu RS sigue creciendo.",
+    why_point4_title:"Pagos rápidos a los jugadores", why_point4_text:"Los jugadores casi no se van a la competencia, y siguen siendo tu fuente de ingresos por más tiempo.",
+    why_point6_title:"Estadísticas transparentes 24/7", why_point6_text:"Registros, depósitos e ingresos, en tiempo real, directo en tu panel.",
+    offer_kicker:"QUÉ RECIBES DE NOSOTROS", offer_title:"No es solo un enlace, es un kit completo para ganar",
+    offer_subtitle:"Te damos todo lo que necesitas para que tu tráfico rinda al máximo desde el primer día.",
+    offer_card1_title:"Diseñador personal", offer_card1_text:"Creatividades hechas para tu plataforma y GEO, no una plantilla, algo que realmente convierte.",
+    offer_card2_title:"Banners para cualquier formato", offer_card2_text:"Banners listos y a medida para tu sitio, Telegram y redes sociales, en el idioma que necesites.",
+    offer_card3_title:"Códigos promocionales", offer_card3_text:"Códigos promocionales personales con aplicación automática, fácil rastrear qué trae tu tráfico.",
+    offer_card4_title:"APK con tu marca", offer_card4_text:"Una app móvil ligada a tu enlace, más conversión que un simple sitio web.",
+    offer_card5_title:"Soporte y gestor personal", offer_card5_text:"Respuestas rápidas, ayuda con GEOs y optimización, 24/7.",
+    offer_card6_title:"Pagos diarios", offer_card6_text:"Sin esperar semanas, tu ingreso se paga todos los días.",
+    cmp_kicker:"NOSOTROS VS EL MERCADO", cmp_title:"Cómo nos comparamos con 1xBet, 1win y Linebet",
+    cmp_subtitle:"Una comparación honesta, basada en hechos. Esta es la diferencia real.",
+    cmp_highlight_title:"Pagos diarios, sin saldo negativo",
+    cmp_highlight_text:"1xBet, 1win y Linebet pagan semanalmente, y cualquier saldo negativo se arrastra al siguiente período. Con nosotros, los pagos son diarios, y cada dólar que ganas es tuyo.",
+    cmp_card1_them:"RS hasta 40%, pagos semanales, el saldo negativo se arrastra.", cmp_card1_us:"Con nosotros: pagos diarios, sin arrastre",
+    cmp_card2_them:"Buenas creatividades y soporte, pero pagos semanales (salvo CPA) y el saldo negativo se arrastra.", cmp_card2_us:"Con nosotros: pagos diarios para todos los partners, y sin arrastre negativo",
+    cmp_card3_them:"RS de 25% a 50%, pagos semanales, el saldo negativo se arrastra.", cmp_card3_us:"Con nosotros: pagos diarios, sin arrastre, y además un diseñador personal",
+    cta_title:"¿Listo para ganar con cada jugador, de por vida?", cta_subtitle:"Escríbeme directo, te armo el modelo, la tasa y los materiales para tu tráfico.", cta_button:"Escribir por Telegram",
+    footer_text:"Trabajo con webmasters y media buyers de todo el mundo. Respondo yo mismo.",
+    footer_contact_label:"Contáctame", footer_tg_prefix:"Escribir a",
+    footer_product_link:"Producto: Mostbet.com ↗", footer_register_link:"Registro de partner ↗",
+    footer_disclaimer:"Este material está dirigido a partners y profesionales del tráfico (18+). No es una oferta para jugadores.",
+    footer_rights:"© Mostbet Partners"
+  },
+  pt: {
+    nav_case:"Case de sucesso", nav_models:"RS vs Fix", nav_offer:"O que oferecemos", nav_contacts:"Contato", nav_cta:"Falar no Telegram",
+    hero_badge:"MOSTBET PARTNERS · PROGRAMA DE AFILIADOS",
+    hero_title:"Traga um jogador, receba por meses e anos",
+    hero_subtitle:"Mesmo que você toque seu canal ou faça streaming sozinho, isso já basta. Traga um jogador uma vez, e você recebe todo mês enquanto ele continuar jogando.",
+    hero_cta_primary:"Seja um Parceiro", hero_cta_secondary:"Ver o case ↓",
+    hero_chip_1:"TOP em buscas no nicho", hero_chip_2:"Pagamentos diários", hero_chip_3:"Sem arrasto de saldo negativo",
+    hero_stat_label:"RevShare de cada jogador", hero_stat_value:"Vitalício", hero_stat_note:"RS alto, sem teto, cresce todo mês",
+    hero_stat_foot_1:"Pagamentos · todo dia", hero_stat_foot_2:"Sem limite",
+    case_kicker:"CASE REAL", case_title:"Não é print de apresentação, é o painel real do nosso parceiro",
+    case_subtitle:"Como funciona o ganho, com prova ao vivo: o painel real de um dos nossos parceiros.",
+    step1_title:"Clique no link", step1_text:"O jogador se cadastra e fica vinculado ao parceiro no sistema para sempre.",
+    step2_title:"Jogo e depósitos", step2_text:"Todo mês o jogador recarrega o saldo e joga.",
+    step3_title:"Sua %, vitalícia", step3_text:"Você recebe uma parte de cada depósito enquanto o jogador estiver ativo.",
+    case_shot_badge:"Print real · painel de um parceiro", case_shot_alt:"Print do painel de um parceiro da Mostbet Partners",
+    case_real_stat1_label:"JOGADORES TRAZIDOS", case_real_stat2_label:"VOLUME DE DEPÓSITOS DOS JOGADORES", case_real_stat3_label:"GANHO DO PARCEIRO, AINDA CRESCENDO",
+    case_real_note:"Print do painel de um dos nossos parceiros. Números reais, não é ilustração.",
+    chart_legend_rs:"RevShare (acumulado)", chart_legend_fix:"CPA / Fix (pagamento único)",
+    chart_caption:"Ganho acumulado de uma coorte de jogadores, $ · eixo horizontal, meses (1–12)",
+    chart_stat_1_label:"FIX DA COORTE", chart_stat_1_value:"$1.440, e é só isso, para sempre",
+    chart_stat_2_label:"RS APÓS 12 MESES", chart_stat_2_value:"$4.820, e continua crescendo",
+    chart_stat_3_label:"ONDE O RS ULTRAPASSA O FIX", chart_stat_3_value:"Já no mês 2",
+    models_kicker:"MODELOS DE PARCERIA", models_title:"RS, CPA/Fix e híbrido, qual é a diferença",
+    models_subtitle:"Trabalhamos com três modelos e ajudamos você a escolher o que combina com seu tráfego, mas a maioria dos nossos top parceiros diz que o RS compensa mais no longo prazo.",
+    models_verdict:"O que a maioria dos nossos top parceiros diz: migrar para RS dá um ganho ilimitado, que continua entrando mesmo sem novo investimento. Muitos parceiros já migraram do Fix para o RS.",
+    why_kicker:"POR QUE A MOSTBET", why_title:"Um produto que se vende sozinho para o jogador",
+    why_subtitle:"Quanto maior a conversão e a retenção do produto, maior o seu ganho a cada jogador trazido.",
+    why_highlight_title:"Os jogadores nos procuram sozinhos", why_highlight_text:"A Mostbet é uma das marcas mais buscadas do nicho, e investimos constantemente em mídia. Mais demanda orgânica significa mais conversão no seu tráfego.",
+    why_point1_title:"Esportes + esports + cassino", why_point1_text:"Apostas ao vivo e centenas de provedores de jogos, tem algo para cada público.",
+    why_point2_title:"Promoções que realmente retêm", why_point2_text:"Roda da Fortuna e campanhas da Copa do Mundo 2026, o jogador sempre volta, e seu RS continua crescendo.",
+    why_point4_title:"Pagamentos rápidos aos jogadores", why_point4_text:"Os jogadores raramente vão para a concorrência, e continuam sendo sua fonte de renda por mais tempo.",
+    why_point6_title:"Estatísticas transparentes 24/7", why_point6_text:"Cadastros, depósitos e ganhos, em tempo real, direto no seu painel.",
+    offer_kicker:"O QUE VOCÊ GANHA DA GENTE", offer_title:"Não é só um link, é um kit completo para ganhar dinheiro",
+    offer_subtitle:"Damos tudo o que você precisa para seu tráfego render o máximo desde o primeiro dia.",
+    offer_card1_title:"Designer pessoal", offer_card1_text:"Criativos feitos para sua plataforma e GEO, nada de template, algo que realmente converte.",
+    offer_card2_title:"Banners para qualquer formato", offer_card2_text:"Banners prontos e personalizados para seu site, Telegram e redes sociais, no idioma que você precisar.",
+    offer_card3_title:"Códigos promocionais", offer_card3_text:"Códigos promocionais pessoais com aplicação automática, fácil de rastrear o que seu tráfego traz.",
+    offer_card4_title:"APK com sua marca", offer_card4_text:"Um app mobile ligado ao seu link, mais conversão que um site comum.",
+    offer_card5_title:"Suporte e gerente pessoal", offer_card5_text:"Respostas rápidas, ajuda com GEOs e otimização, 24/7.",
+    offer_card6_title:"Pagamentos diários", offer_card6_text:"Sem esperar semanas, seu ganho é pago todo dia.",
+    cmp_kicker:"NÓS VS O MERCADO", cmp_title:"Como nos comparamos com 1xBet, 1win e Linebet",
+    cmp_subtitle:"Uma comparação honesta, baseada em fatos. Essa é a diferença na prática.",
+    cmp_highlight_title:"Pagamentos diários, sem saldo negativo",
+    cmp_highlight_text:"1xBet, 1win e Linebet pagam semanalmente, e qualquer saldo negativo é arrastado para o próximo período. Com a gente, os pagamentos são diários, e cada dólar que você ganha continua seu.",
+    cmp_card1_them:"RS até 40%, pagamentos semanais, saldo negativo é arrastado.", cmp_card1_us:"Com a gente: pagamentos diários, sem arrasto",
+    cmp_card2_them:"Bons criativos e suporte, mas pagamentos semanais (exceto CPA) e saldo negativo é arrastado.", cmp_card2_us:"Com a gente: pagamentos diários para todos os parceiros, e sem arrasto negativo",
+    cmp_card3_them:"RS de 25% a 50%, pagamentos semanais, saldo negativo é arrastado.", cmp_card3_us:"Com a gente: pagamentos diários, sem arrasto, e ainda tem designer pessoal",
+    cta_title:"Pronto para ganhar com cada jogador, para sempre?", cta_subtitle:"Me chama direto, eu monto o modelo, a taxa e os materiais para o seu tráfego.", cta_button:"Falar no Telegram",
+    footer_text:"Trabalho com webmasters e media buyers do mundo todo. Eu mesmo respondo.",
+    footer_contact_label:"Fale comigo", footer_tg_prefix:"Falar com",
+    footer_product_link:"Produto: Mostbet.com ↗", footer_register_link:"Cadastro de parceiro ↗",
+    footer_disclaimer:"Este material é voltado a parceiros e profissionais de tráfego (18+). Não é uma oferta para jogadores.",
+    footer_rights:"© Mostbet Partners"
+  },
+  bn: {
+    nav_case:"কেস স্টাডি", nav_models:"RS vs Fix", nav_offer:"আমরা কী দিই", nav_contacts:"যোগাযোগ", nav_cta:"টেলিগ্রামে লিখুন",
+    hero_badge:"MOSTBET PARTNERS · অ্যাফিলিয়েট প্রোগ্রাম",
+    hero_title:"একজন খেলোয়াড় আনুন, মাস আর বছর ধরে আয় করুন",
+    hero_subtitle:"তুমি একা চ্যানেল চালাও বা স্ট্রিম করো, তাতেই যথেষ্ট। একবার খেলোয়াড় আনলে, যতদিন সে খেলবে ততদিন প্রতি মাসে আয় হতে থাকবে।",
+    hero_cta_primary:"পার্টনার হোন", hero_cta_secondary:"কেস স্টাডি দেখুন ↓",
+    hero_chip_1:"নিশে চাহিদায় শীর্ষে", hero_chip_2:"প্রতিদিন পেআউট", hero_chip_3:"নেগেটিভ ক্যারিওভার নেই",
+    hero_stat_label:"প্রতিটি খেলোয়াড় থেকে RevShare", hero_stat_value:"আজীবন", hero_stat_note:"উঁচু, সীমাহীন RS, প্রতি মাসে বাড়ে",
+    hero_stat_foot_1:"পেআউট · প্রতিদিন", hero_stat_foot_2:"কোনো সীমা নেই",
+    case_kicker:"আসল কেস", case_title:"প্রেজেন্টেশনের ছবি নয়, আমাদের পার্টনারের আসল ড্যাশবোর্ড",
+    case_subtitle:"আয় কীভাবে হয়, তার জীবন্ত প্রমাণ: আমাদের এক পার্টনারের আসল ড্যাশবোর্ড।",
+    step1_title:"লিংকে ক্লিক করুন", step1_text:"খেলোয়াড় সাইন আপ করে এবং সিস্টেমে চিরকালের জন্য পার্টনারের সাথে যুক্ত হয়ে যায়।",
+    step2_title:"গেমপ্লে ও ডিপোজিট", step2_text:"প্রতি মাসে খেলোয়াড় তার ব্যালেন্স টপ আপ করে এবং খেলে।",
+    step3_title:"তোমার %, আজীবন", step3_text:"খেলোয়াড় সক্রিয় থাকা পর্যন্ত প্রতিটি ডিপোজিট থেকে তুমি একটি অংশ পাও।",
+    case_shot_badge:"আসল স্ক্রিনশট · পার্টনার ড্যাশবোর্ড", case_shot_alt:"Mostbet Partners এর একজন পার্টনার ড্যাশবোর্ডের স্ক্রিনশট",
+    case_real_stat1_label:"আনা খেলোয়াড়", case_real_stat2_label:"খেলোয়াড়দের ডিপোজিট পরিমাণ", case_real_stat3_label:"পার্টনারের আয়, এখনো বাড়ছে",
+    case_real_note:"আমাদের এক পার্টনারের ড্যাশবোর্ডের স্ক্রিনশট। আসল সংখ্যা, কোনো চিত্র নয়।",
+    chart_legend_rs:"RevShare (সঞ্চিত)", chart_legend_fix:"CPA / Fix (একবারের)",
+    chart_caption:"একটি খেলোয়াড় কোহোর্ট থেকে সঞ্চিত আয়, $ · অনুভূমিক অক্ষ, মাস (1–12)",
+    chart_stat_1_label:"কোহোর্টের জন্য FIX", chart_stat_1_value:"$1,440, এটাই সব, চিরকালের জন্য",
+    chart_stat_2_label:"12 মাস পর RS", chart_stat_2_value:"$4,820, এখনও বাড়ছে",
+    chart_stat_3_label:"যেখানে RS, FIX কে ছাড়িয়ে যায়", chart_stat_3_value:"ইতিমধ্যে মাস 2 এ",
+    models_kicker:"সহযোগিতার মডেল", models_title:"RS, CPA/Fix আর হাইব্রিড, পার্থক্য কী",
+    models_subtitle:"আমরা তিনটি মডেলে কাজ করি এবং তোমার ট্রাফিকের জন্য উপযুক্তটি বেছে নিতে সাহায্য করব, তবে আমাদের বেশিরভাগ টপ পার্টনারের মতে দীর্ঘমেয়াদে RS বেশি লাভজনক।",
+    models_verdict:"আমাদের বেশিরভাগ টপ পার্টনার যা বলেন: RS তে সুইচ করলে সীমাহীন আয় হয়, যা নতুন বিনিয়োগ ছাড়াও আসতে থাকে। অনেক পার্টনার ইতিমধ্যে Fix থেকে RS তে সুইচ করেছেন।",
+    why_kicker:"কেন MOSTBET", why_title:"এমন একটি প্রোডাক্ট যা নিজেই খেলোয়াড়ের কাছে বিক্রি হয়",
+    why_subtitle:"প্রোডাক্টের কনভার্সন আর রিটেনশন যত বেশি, প্রতিটি আনা খেলোয়াড় থেকে তোমার আয় তত বেশি।",
+    why_highlight_title:"খেলোয়াড়রা নিজেরাই আমাদের খোঁজে", why_highlight_text:"Mostbet এই নিশের সবচেয়ে বেশি খোঁজা ব্র্যান্ডগুলোর একটি, এবং আমরা নিয়মিত মিডিয়া বিজ্ঞাপনে বিনিয়োগ করি। যত বেশি অর্গানিক চাহিদা, তোমার ট্রাফিকে তত বেশি কনভার্সন।",
+    why_point1_title:"স্পোর্টস + ইস্পোর্টস + ক্যাসিনো", why_point1_text:"লাইভ বেটিং আর শত শত গেম প্রোভাইডার, প্রতিটি অডিয়েন্সের জন্য কিছু না কিছু আছে।",
+    why_point2_title:"প্রোমো যা সত্যিই ধরে রাখে", why_point2_text:"হুইল অফ ফরচুন আর বিশ্বকাপ 2026 ক্যাম্পেইন, খেলোয়াড় বারবার ফিরে আসে, আর তোমার RS বাড়তে থাকে।",
+    why_point4_title:"খেলোয়াড়দের দ্রুত পেআউট", why_point4_text:"খেলোয়াড়রা খুব কমই প্রতিদ্বন্দ্বীর কাছে যায়, তারা দীর্ঘদিন তোমার আয়ের উৎস হয়ে থাকে।",
+    why_point6_title:"24/7 স্বচ্ছ পরিসংখ্যান", why_point6_text:"সাইন-আপ, ডিপোজিট আর আয়, রিয়েল টাইমে, সরাসরি তোমার ড্যাশবোর্ডে।",
+    offer_kicker:"আমাদের থেকে তুমি কী পাও", offer_title:"শুধু একটি লিংক নয়, আয় করার জন্য পূর্ণ টুলকিট",
+    offer_subtitle:"প্রথম দিন থেকেই তোমার ট্রাফিক সর্বোচ্চ আয় দিতে যা যা দরকার, সব আমরা দিই।",
+    offer_card1_title:"পার্সোনাল ডিজাইনার", offer_card1_text:"তোমার প্ল্যাটফর্ম আর GEO অনুযায়ী ক্রিয়েটিভ, কোনো টেমপ্লেট নয়, সত্যিই কনভার্ট করে এমন কিছু।",
+    offer_card2_title:"যেকোনো ফরম্যাটের ব্যানার", offer_card2_text:"তোমার সাইট, টেলিগ্রাম আর সোশ্যাল মিডিয়ার জন্য তৈরি ও কাস্টম ব্যানার, প্রয়োজনীয় ভাষায়।",
+    offer_card3_title:"প্রোমো কোড", offer_card3_text:"অটো-অ্যাপ্লাই সহ পার্সোনাল প্রোমো কোড, তোমার ট্রাফিক কী আনছে তা ট্র্যাক করা সহজ।",
+    offer_card4_title:"ব্র্যান্ডেড APK", offer_card4_text:"তোমার লিংকের সাথে যুক্ত মোবাইল অ্যাপ, ওয়েবসাইটের চেয়ে বেশি কনভার্সন।",
+    offer_card5_title:"সাপোর্ট আর পার্সোনাল ম্যানেজার", offer_card5_text:"দ্রুত উত্তর, GEO আর অপ্টিমাইজেশনে সাহায্য, 24/7।",
+    offer_card6_title:"প্রতিদিন পেআউট", offer_card6_text:"সপ্তাহ অপেক্ষা করতে হয় না, তোমার আয় প্রতিদিন দেওয়া হয়।",
+    cmp_kicker:"আমরা VS মার্কেট", cmp_title:"1xBet, 1win আর Linebet এর তুলনায় আমরা কেমন",
+    cmp_subtitle:"সৎ, তথ্যভিত্তিক তুলনা। বাস্তবে পার্থক্যটা এখানেই।",
+    cmp_highlight_title:"প্রতিদিন পেআউট, নেগেটিভ ব্যালেন্স নেই",
+    cmp_highlight_text:"1xBet, 1win আর Linebet সাপ্তাহিক পেআউট দেয়, আর যেকোনো নেগেটিভ ব্যালেন্স পরবর্তী মেয়াদে ক্যারি হয়ে যায়। আমাদের সাথে, পেআউট প্রতিদিন হয়, আর তুমি যা আয় করো তার প্রতিটি ডলার তোমারই থাকে।",
+    cmp_card1_them:"RS 40% পর্যন্ত, সাপ্তাহিক পেআউট, নেগেটিভ ব্যালেন্স ক্যারি হয়।", cmp_card1_us:"আমাদের সাথে: প্রতিদিন পেআউট, কোনো ক্যারিওভার নেই",
+    cmp_card2_them:"শক্তিশালী ক্রিয়েটিভ আর সাপোর্ট, কিন্তু সাপ্তাহিক পেআউট (CPA বাদে) আর নেগেটিভ ব্যালেন্স ক্যারি হয়।", cmp_card2_us:"আমাদের সাথে: প্রতিটি পার্টনারের জন্য প্রতিদিন পেআউট, আর কোনো নেগেটিভ ক্যারিওভার নেই",
+    cmp_card3_them:"RS 25% থেকে 50% পর্যন্ত, সাপ্তাহিক পেআউট, নেগেটিভ ব্যালেন্স ক্যারি হয়।", cmp_card3_us:"আমাদের সাথে: প্রতিদিন পেআউট, কোনো ক্যারিওভার নেই, আর সাথে একজন পার্সোনাল ডিজাইনারও",
+    cta_title:"প্রতিটি খেলোয়াড় থেকে আজীবন আয় করতে প্রস্তুত?", cta_subtitle:"সরাসরি আমাকে লেখো, তোমার ট্রাফিকের জন্য মডেল, রেট আর মেটেরিয়াল ঠিক করে দেব।", cta_button:"টেলিগ্রামে লিখুন",
+    footer_text:"বিশ্বজুড়ে ওয়েবমাস্টার আর মিডিয়া বায়ারদের সাথে কাজ করি। নিজেই উত্তর দিই।",
+    footer_contact_label:"যোগাযোগ করুন", footer_tg_prefix:"লিখুন",
+    footer_product_link:"প্রোডাক্ট: Mostbet.com ↗", footer_register_link:"পার্টনার রেজিস্ট্রেশন ↗",
+    footer_disclaimer:"এই কনটেন্ট পার্টনার আর ট্রাফিক প্রফেশনালদের জন্য (18+)। এটি খেলোয়াড়দের জন্য কোনো অফার নয়।",
+    footer_rights:"© Mostbet Partners"
+  },
+  fr: {
+    nav_case:"Étude de cas", nav_models:"RS vs Fix", nav_offer:"Ce qu'on te donne", nav_contacts:"Contact", nav_cta:"Écrire sur Telegram",
+    hero_badge:"MOSTBET PARTNERS · PROGRAMME D'AFFILIATION",
+    hero_title:"Un joueur amené, un revenu pendant des mois et des années",
+    hero_subtitle:"Même si tu gères ta chaîne ou tu streames tout seul, ça suffit. Amène un joueur une fois, et tu gagnes chaque mois tant qu'il continue à jouer.",
+    hero_cta_primary:"Devenir Partenaire", hero_cta_secondary:"Voir l'étude de cas ↓",
+    hero_chip_1:"TOP de la demande dans la niche", hero_chip_2:"Paiements quotidiens", hero_chip_3:"Pas de report de solde négatif",
+    hero_stat_label:"RevShare sur chaque joueur", hero_stat_value:"À vie", hero_stat_note:"RS élevé, sans plafond, grandit chaque mois",
+    hero_stat_foot_1:"Paiements · tous les jours", hero_stat_foot_2:"Sans plafond",
+    case_kicker:"CAS RÉEL", case_title:"Pas une image de présentation, le vrai tableau de bord de notre partenaire",
+    case_subtitle:"Comment fonctionne le revenu, avec une preuve en direct : le vrai tableau de bord d'un de nos partenaires.",
+    step1_title:"Clic sur le lien", step1_text:"Le joueur s'inscrit et reste lié au partenaire dans le système pour toujours.",
+    step2_title:"Jeu et dépôts", step2_text:"Chaque mois, le joueur recharge son solde et joue.",
+    step3_title:"Ton %, à vie", step3_text:"Tu touches une part de chaque dépôt tant que le joueur reste actif.",
+    case_shot_badge:"Vraie capture · tableau de bord d'un partenaire", case_shot_alt:"Capture d'écran du tableau de bord d'un partenaire Mostbet Partners",
+    case_real_stat1_label:"JOUEURS AMENÉS", case_real_stat2_label:"VOLUME DE DÉPÔTS DES JOUEURS", case_real_stat3_label:"REVENU DU PARTENAIRE, TOUJOURS EN HAUSSE",
+    case_real_note:"Capture d'écran du tableau de bord d'un de nos partenaires. De vrais chiffres, pas une illustration.",
+    chart_legend_rs:"RevShare (cumulé)", chart_legend_fix:"CPA / Fix (unique)",
+    chart_caption:"Revenu cumulé d'une cohorte de joueurs, $ · axe horizontal, mois (1–12)",
+    chart_stat_1_label:"FIX POUR LA COHORTE", chart_stat_1_value:"$1 440, et c'est tout, pour toujours",
+    chart_stat_2_label:"RS APRÈS 12 MOIS", chart_stat_2_value:"$4 820, et ça continue de grandir",
+    chart_stat_3_label:"LÀ OÙ RS DÉPASSE FIX", chart_stat_3_value:"Dès le mois 2",
+    models_kicker:"MODÈLES DE COLLABORATION", models_title:"RS, CPA/Fix et hybride, quelle est la différence",
+    models_subtitle:"On travaille avec trois modèles et on t'aide à choisir celui qui convient à ton trafic, mais la plupart de nos meilleurs partenaires trouvent que le RS rapporte plus sur le long terme.",
+    models_verdict:"Ce que dit la plupart de nos meilleurs partenaires : passer au RS donne un revenu illimité, qui continue d'arriver même sans nouvel investissement. Beaucoup de partenaires sont déjà passés du Fix au RS.",
+    why_kicker:"POURQUOI MOSTBET", why_title:"Un produit qui se vend tout seul au joueur",
+    why_subtitle:"Plus la conversion et la rétention du produit sont élevées, plus ton revenu grandit à chaque joueur amené.",
+    why_highlight_title:"Les joueurs nous cherchent eux-mêmes", why_highlight_text:"Mostbet est l'une des marques les plus recherchées de la niche, et on investit régulièrement en publicité média. Plus de demande organique veut dire plus de conversion sur ton trafic.",
+    why_point1_title:"Sport + esport + casino", why_point1_text:"Paris en direct et des centaines de fournisseurs de jeux, il y a une offre pour chaque audience.",
+    why_point2_title:"Des promos qui retiennent vraiment", why_point2_text:"Roue de la Fortune et campagnes Coupe du Monde 2026, le joueur revient encore et encore, et ton RS continue de grandir.",
+    why_point4_title:"Paiements rapides aux joueurs", why_point4_text:"Les joueurs partent rarement chez un concurrent, ils restent plus longtemps ta source de revenu.",
+    why_point6_title:"Statistiques transparentes 24/7", why_point6_text:"Inscriptions, dépôts et revenu, en temps réel, directement dans ton tableau de bord.",
+    offer_kicker:"CE QUE TU REÇOIS DE NOTRE PART", offer_title:"Pas juste un lien, un kit complet pour gagner de l'argent",
+    offer_subtitle:"On te donne tout ce qu'il faut pour que ton trafic rapporte le maximum dès le premier jour.",
+    offer_card1_title:"Designer personnel", offer_card1_text:"Des créas faites pour ta plateforme et ta GEO, pas un modèle générique, quelque chose qui convertit vraiment.",
+    offer_card2_title:"Bannières pour tous les formats", offer_card2_text:"Bannières prêtes à l'emploi ou sur mesure pour ton site, Telegram et les réseaux sociaux, dans la langue qu'il te faut.",
+    offer_card3_title:"Codes promo", offer_card3_text:"Des codes promo personnels avec application automatique, facile de suivre ce que ton trafic rapporte.",
+    offer_card4_title:"APK à ta marque", offer_card4_text:"Une appli mobile liée à ton lien, plus de conversion qu'un simple site.",
+    offer_card5_title:"Support et manager dédié", offer_card5_text:"Réponses rapides, aide sur les GEOs et l'optimisation, 24/7.",
+    offer_card6_title:"Paiements quotidiens", offer_card6_text:"Pas besoin d'attendre des semaines, ton revenu est versé chaque jour.",
+    cmp_kicker:"NOUS VS LE MARCHÉ", cmp_title:"Comment on se compare à 1xBet, 1win et Linebet",
+    cmp_subtitle:"Une comparaison honnête, basée sur des faits. Voilà la vraie différence.",
+    cmp_highlight_title:"Paiements quotidiens, pas de solde négatif",
+    cmp_highlight_text:"1xBet, 1win et Linebet paient chaque semaine, et tout solde négatif est reporté sur la période suivante. Chez nous, les paiements sont quotidiens, et chaque dollar que tu gagnes reste à toi.",
+    cmp_card1_them:"RS jusqu'à 40%, paiements hebdomadaires, le solde négatif est reporté.", cmp_card1_us:"Chez nous : paiements quotidiens, sans report",
+    cmp_card2_them:"De bonnes créas et un bon support, mais paiements hebdomadaires (sauf CPA) et le solde négatif est reporté.", cmp_card2_us:"Chez nous : paiements quotidiens pour chaque partenaire, et pas de report négatif",
+    cmp_card3_them:"RS de 25% à 50%, paiements hebdomadaires, le solde négatif est reporté.", cmp_card3_us:"Chez nous : paiements quotidiens, sans report, et un designer personnel en plus",
+    cta_title:"Prêt à gagner sur chaque joueur, à vie ?", cta_subtitle:"Écris-moi directement, je m'occupe du modèle, du taux et des supports pour ton trafic.", cta_button:"Écrire sur Telegram",
+    footer_text:"Je travaille avec des webmasters et des media buyers du monde entier. Je réponds moi-même.",
+    footer_contact_label:"Contacte-moi", footer_tg_prefix:"Écrire à",
+    footer_product_link:"Produit : Mostbet.com ↗", footer_register_link:"Inscription partenaire ↗",
+    footer_disclaimer:"Ce contenu s'adresse aux partenaires et professionnels du trafic (18+). Ce n'est pas une offre destinée aux joueurs.",
+    footer_rights:"© Mostbet Partners"
   }
 };
 
@@ -857,17 +1183,38 @@ function applyLang(lang){
   });
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-  document.querySelectorAll('.lang-btn').forEach(function(btn){
+  document.querySelectorAll('.lang-opt').forEach(function(btn){
     btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
   });
+  const FLAG_MAP = {ru:'flag-ru', en:'flag-gb', uz:'flag-uz', ar:'flag-ma', hi:'flag-in', es:'flag-mx', pt:'flag-br', bn:'flag-bd', fr:'flag-fr'};
+  const CODE_MAP = {ru:'RU', en:'EN', uz:'UZ', ar:'AR', hi:'HI', es:'ES', pt:'PT', bn:'BN', fr:'FR'};
+  const curUse = document.getElementById('langCurrentUse');
+  const curCode = document.getElementById('langCurrentCode');
+  if(curUse) curUse.setAttribute('href', '#' + (FLAG_MAP[lang] || 'flag-ru'));
+  if(curCode) curCode.textContent = CODE_MAP[lang] || lang.toUpperCase();
   window.__mbLang = lang;
   renderChart();
 }
 
-document.getElementById('langSwitch').addEventListener('click', function(e){
-  const btn = e.target.closest('.lang-btn');
+const langSwitchEl = document.getElementById('langSwitch');
+const langCurrentBtn = document.getElementById('langCurrentBtn');
+langCurrentBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  const isOpen = langSwitchEl.classList.toggle('open');
+  langCurrentBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+});
+document.getElementById('langMenu').addEventListener('click', function(e){
+  const btn = e.target.closest('.lang-opt');
   if(!btn) return;
   applyLang(btn.getAttribute('data-lang'));
+  langSwitchEl.classList.remove('open');
+  langCurrentBtn.setAttribute('aria-expanded', 'false');
+});
+document.addEventListener('click', function(e){
+  if(!langSwitchEl.contains(e.target)) langSwitchEl.classList.remove('open');
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') langSwitchEl.classList.remove('open');
 });
 
 /* ---------- Chart: RS cumulative vs Fix flat ---------- */
@@ -949,7 +1296,7 @@ function renderChart(){
   });
 
   function showTip(i, rsV, fixV){
-    const monthWord = { ru:'Месяц', en:'Month', uz:'Oy', ar:'الشهر' }[window.__mbLang] || 'Месяц';
+    const monthWord = { ru:'Месяц', en:'Month', uz:'Oy', ar:'الشهر', hi:'महीना', es:'Mes', pt:'Mês', bn:'মাস', fr:'Mois' }[window.__mbLang] || 'Месяц';
     tooltip.innerHTML = monthWord + ' ' + (i+1) + '<br>RS: $' + rsV.toLocaleString() + '<br>Fix: $' + fixV.toLocaleString();
     tooltip.classList.add('show');
   }
@@ -967,6 +1314,11 @@ function renderChart(){
   if(nav.indexOf('en') === 0) initial = 'en';
   else if(nav.indexOf('uz') === 0) initial = 'uz';
   else if(nav.indexOf('ar') === 0) initial = 'ar';
+  else if(nav.indexOf('hi') === 0) initial = 'hi';
+  else if(nav.indexOf('es') === 0) initial = 'es';
+  else if(nav.indexOf('pt') === 0) initial = 'pt';
+  else if(nav.indexOf('bn') === 0) initial = 'bn';
+  else if(nav.indexOf('fr') === 0) initial = 'fr';
   else if(nav.indexOf('ru') === 0) initial = 'ru';
   applyLang(initial);
 })();
