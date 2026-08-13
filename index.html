@@ -261,6 +261,40 @@
   .chart-stat .cs-label{font-size:11.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;}
   .chart-stat .cs-value{font-family:var(--font-display);font-size:19px;font-weight:700;margin-top:6px;color:#fff;}
 
+  /* ---------- CALCULATOR ---------- */
+  .calc-card{
+    background:linear-gradient(160deg, rgba(245,80,28,.12), var(--black-2) 55%);
+    border:1px solid rgba(245,80,28,.3);border-radius:var(--radius-lg);
+    padding:30px 28px;
+  }
+  .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch;}
+  @media(max-width:900px){.calc-grid{grid-template-columns:1fr;}}
+  .calc-inputs{display:flex;flex-direction:column;gap:16px;justify-content:center;}
+  .calc-field{display:flex;flex-direction:column;gap:7px;}
+  .calc-label{font-size:12.5px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.03em;}
+  .calc-select,.calc-input{
+    background:rgba(255,255,255,.05);border:1px solid var(--border-dark-2);border-radius:10px;
+    padding:12px 14px;color:#fff;font-size:15px;font-weight:600;font-family:var(--font-main);
+    outline:none;transition:border-color .15s ease, background .15s ease;width:100%;
+  }
+  .calc-select:focus,.calc-input:focus{border-color:var(--orange);background:rgba(255,255,255,.08);}
+  .calc-select{cursor:pointer;}
+  .calc-results{display:flex;flex-direction:column;gap:14px;justify-content:center;}
+  .calc-result{
+    background:rgba(0,0,0,.28);border:1px solid var(--border-dark);border-radius:var(--radius-md);
+    padding:18px 20px;text-align:center;
+  }
+  .calc-result-main{border-color:rgba(245,80,28,.45);background:linear-gradient(160deg, rgba(245,80,28,.16), rgba(0,0,0,.25));}
+  .calc-result-label{font-size:11.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;}
+  .calc-result-value{
+    font-family:var(--font-display);font-size:clamp(34px,4.4vw,46px);font-weight:700;color:#fff;
+    margin-top:8px;line-height:1;text-shadow:0 0 24px rgba(245,80,28,.5);
+  }
+  .calc-result-value-sm{font-size:clamp(24px,3.2vw,30px);color:var(--orange-light);text-shadow:none;}
+  .calc-result-note{font-size:12px;color:var(--text-muted);margin-top:8px;}
+  .calc-disclaimer{font-size:11.5px;color:var(--text-muted);margin-top:20px;text-align:center;max-width:640px;margin-left:auto;margin-right:auto;}
+  .calc-cta{display:flex;margin:18px auto 0;width:fit-content;}
+
   /* ---------- MODELS TABLE ---------- */
   .table-wrap{
     background:var(--black-2);border:1px solid var(--border-dark);border-radius:var(--radius-lg);
@@ -437,6 +471,7 @@
     <div class="brand"><span class="brand-mark" role="img" aria-label="Mostbet Partners"></span></div>
     <nav class="links">
       <a href="#case" data-i18n="nav_case">Кейс</a>
+      <a href="#calculator" data-i18n="nav_calc">Калькулятор</a>
       <a href="#models" data-i18n="nav_models">RS vs Fix</a>
       <a href="#offer" data-i18n="nav_offer">Что даём</a>
       <a href="#contacts" data-i18n="nav_contacts">Контакты</a>
@@ -473,6 +508,7 @@
       <p class="lead" data-i18n="hero_subtitle">Даже если ты один ведёшь канал или стримишь, этого достаточно. Один раз привёл игрока, зарабатываешь с него каждый месяц, пока он играет.</p>
       <div class="hero-ctas">
         <a class="btn btn-primary" href="https://mostbet.partners/christ" target="_blank" rel="noopener" data-i18n="hero_cta_primary">Стать партнёром</a>
+        <a class="btn btn-ghost-dark" href="#calculator" data-i18n="hero_cta_calc">Посчитать свой доход ↓</a>
         <a class="btn btn-ghost-dark" href="#case" data-i18n="hero_cta_secondary">Смотреть кейс ↓</a>
       </div>
       <div class="hero-chips">
@@ -537,6 +573,54 @@
       </div>
     </div>
     <p class="case-note" data-i18n="case_real_note">Скриншот кабинета одного из наших партнёров. Реальные цифры, не иллюстрация.</p>
+  </div>
+</section>
+
+<section id="calculator" class="section-border">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker" data-i18n="calc_kicker">КАЛЬКУЛЯТОР ДОХОДА</span>
+      <h2 class="title" data-i18n="calc_title">Сколько ты можешь зарабатывать на RS</h2>
+      <p class="subtitle" data-i18n="calc_subtitle">Введи свои цифры, посчитаем твой ожидаемый доход в месяц и потенциал за год.</p>
+    </div>
+    <div class="calc-card">
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <label class="calc-field">
+            <span class="calc-label" data-i18n="calc_label_geo">Гео твоей аудитории</span>
+            <select id="calcGeo" class="calc-select">
+              <option value="tier1" data-i18n="calc_geo_tier1">Европа / США / Австралия</option>
+              <option value="cis" data-i18n="calc_geo_cis" selected>СНГ / Центральная Азия</option>
+              <option value="latam" data-i18n="calc_geo_latam">Латинская Америка</option>
+              <option value="sasia" data-i18n="calc_geo_sasia">Индия / Бангладеш / Юж. Азия</option>
+              <option value="mena" data-i18n="calc_geo_mena">Ближний Восток / Африка</option>
+            </select>
+          </label>
+          <label class="calc-field">
+            <span class="calc-label" data-i18n="calc_label_subs">Подписчиков / участников группы</span>
+            <input id="calcSubs" class="calc-input" type="number" min="0" step="100" value="10000" inputmode="numeric">
+          </label>
+          <label class="calc-field">
+            <span class="calc-label" data-i18n="calc_label_views">Просмотров на пост / стрим</span>
+            <input id="calcViews" class="calc-input" type="number" min="0" step="100" value="5000" inputmode="numeric">
+          </label>
+        </div>
+        <div class="calc-results">
+          <div class="calc-result calc-result-main">
+            <div class="calc-result-label" data-i18n="calc_result_month_label">Ожидаемый доход в месяц</div>
+            <div class="calc-result-value" id="calcMonthValue" dir="ltr">$0</div>
+            <div class="calc-result-note" data-i18n="calc_result_month_note">При стабильном постинге, RS с новых игроков каждый месяц</div>
+          </div>
+          <div class="calc-result">
+            <div class="calc-result-label" data-i18n="calc_result_year_label">Потенциал за 12 месяцев</div>
+            <div class="calc-result-value calc-result-value-sm" id="calcYearValue" dir="ltr">$0</div>
+            <div class="calc-result-note" data-i18n="calc_result_year_note">С ростом аудитории и накоплением RS с активных игроков</div>
+          </div>
+        </div>
+      </div>
+      <p class="calc-disclaimer" data-i18n="calc_disclaimer">Расчёт ориентировочный, основан на средних показателях по нише. Реальный доход зависит от вовлечённости аудитории, гео и качества контента.</p>
+      <a class="btn btn-primary calc-cta" href="https://mostbet.partners/christ" target="_blank" rel="noopener" data-i18n="calc_cta">Стать партнёром и начать получать эти деньги</a>
+    </div>
   </div>
 </section>
 
@@ -685,10 +769,12 @@
 const I18N = {
   ru: {
     nav_case:"Кейс", nav_models:"RS vs Fix", nav_offer:"Что даём", nav_contacts:"Контакты", nav_cta:"Написать в Telegram",
+    nav_calc:"Калькулятор",
     hero_badge:"MOSTBET PARTNERS · ПАРТНЁРСКАЯ ПРОГРАММА",
     hero_title:"Один игрок, доход на месяцы и годы вперёд",
     hero_subtitle:"Даже если ты один ведёшь канал или стримишь, этого достаточно. Один раз привёл игрока, зарабатываешь с него каждый месяц, пока он играет.",
     hero_cta_primary:"Стать партнёром", hero_cta_secondary:"Смотреть кейс ↓",
+    hero_cta_calc:"Посчитать свой доход ↓",
     hero_chip_1:"ТОП по спросу в нише", hero_chip_2:"Выплаты ежедневно", hero_chip_3:"Без отрицательного переноса",
     hero_stat_label:"RevShare с каждого игрока", hero_stat_value:"Пожизненно", hero_stat_note:"Высокий RS без потолка, растёт каждый месяц",
     hero_stat_foot_1:"Выплаты · каждый день", hero_stat_foot_2:"Без потолка",
@@ -700,6 +786,15 @@ const I18N = {
     case_shot_badge:"Реальный скрин · кабинет партнёра", case_shot_alt:"Скриншот кабинета партнёра Mostbet Partners",
     case_real_stat1_label:"ИГРОКОВ ПРИВЛЕЧЕНО", case_real_stat2_label:"СУММА ДЕПОЗИТОВ ИГРОКОВ", case_real_stat3_label:"ДОХОД ПАРТНЁРА, И ПРОДОЛЖАЕТ РАСТИ",
     case_real_note:"Скриншот кабинета одного из наших партнёров. Реальные цифры, не иллюстрация.",
+    calc_kicker:"КАЛЬКУЛЯТОР ДОХОДА", calc_title:"Сколько ты можешь зарабатывать на RS",
+    calc_subtitle:"Введи свои цифры, посчитаем твой ожидаемый доход в месяц и потенциал за год.",
+    calc_label_geo:"Гео твоей аудитории",
+    calc_geo_tier1:"Европа / США / Австралия", calc_geo_cis:"СНГ / Центральная Азия", calc_geo_latam:"Латинская Америка", calc_geo_sasia:"Индия / Бангладеш / Юж. Азия", calc_geo_mena:"Ближний Восток / Африка",
+    calc_label_subs:"Подписчиков / участников группы", calc_label_views:"Просмотров на пост / стрим",
+    calc_result_month_label:"Ожидаемый доход в месяц", calc_result_month_note:"При стабильном постинге, RS с новых игроков каждый месяц",
+    calc_result_year_label:"Потенциал за 12 месяцев", calc_result_year_note:"С ростом аудитории и накоплением RS с активных игроков",
+    calc_disclaimer:"Расчёт ориентировочный, основан на средних показателях по нише. Реальный доход зависит от вовлечённости аудитории, гео и качества контента.",
+    calc_cta:"Стать партнёром и начать получать эти деньги",
     chart_legend_rs:"RevShare (накопительно)", chart_legend_fix:"CPA / Фикс (разово)",
     chart_caption:"Накопленный доход с одной когорты игроков, $ · по горизонтали, месяцы (1–12)",
     chart_stat_1_label:"FIX ЗА КОГОРТУ", chart_stat_1_value:"$1 440, и это всё, навсегда",
@@ -739,10 +834,12 @@ const I18N = {
   },
   en: {
     nav_case:"Case Study", nav_models:"RS vs Fix", nav_offer:"What We Give", nav_contacts:"Contacts", nav_cta:"Message on Telegram",
+    nav_calc:"Calculator",
     hero_badge:"MOSTBET PARTNERS · AFFILIATE PROGRAM",
     hero_title:"Bring one player, get paid for months and years ahead",
     hero_subtitle:"Even if you run your channel or stream solo, that's enough. Bring a player once, get paid every month he keeps playing.",
     hero_cta_primary:"Become a Partner", hero_cta_secondary:"See the case study ↓",
+    hero_cta_calc:"Calculate your income ↓",
     hero_chip_1:"TOP by demand in the niche", hero_chip_2:"Daily payouts", hero_chip_3:"No negative carryover",
     hero_stat_label:"RevShare from every player", hero_stat_value:"For life", hero_stat_note:"High, uncapped RS, grows every month",
     hero_stat_foot_1:"Payouts · every day", hero_stat_foot_2:"No cap",
@@ -754,6 +851,15 @@ const I18N = {
     case_shot_badge:"Real screenshot · a partner's dashboard", case_shot_alt:"Screenshot of a Mostbet Partners partner dashboard",
     case_real_stat1_label:"PLAYERS BROUGHT IN", case_real_stat2_label:"PLAYERS' DEPOSIT VOLUME", case_real_stat3_label:"PARTNER'S INCOME, STILL GROWING",
     case_real_note:"A screenshot of one of our partners' dashboards. Real numbers, not an illustration.",
+    calc_kicker:"INCOME CALCULATOR", calc_title:"How much you could earn on RS",
+    calc_subtitle:"Enter your numbers, we'll estimate your expected monthly income and your potential over a year.",
+    calc_label_geo:"Your audience's GEO",
+    calc_geo_tier1:"Europe / US / Australia", calc_geo_cis:"CIS / Central Asia", calc_geo_latam:"Latin America", calc_geo_sasia:"India / Bangladesh / South Asia", calc_geo_mena:"Middle East / Africa",
+    calc_label_subs:"Subscribers / group members", calc_label_views:"Views per post / stream",
+    calc_result_month_label:"Expected income per month", calc_result_month_note:"With steady posting, RS from new players every month",
+    calc_result_year_label:"Potential over 12 months", calc_result_year_note:"As your audience grows and RS accumulates from active players",
+    calc_disclaimer:"This is an estimate based on average performance in the niche. Actual income depends on audience engagement, GEO and content quality.",
+    calc_cta:"Become a Partner and start earning this money",
     chart_legend_rs:"RevShare (cumulative)", chart_legend_fix:"CPA / Fix (one-time)",
     chart_caption:"Cumulative income from one player cohort, $ · horizontal axis, months (1–12)",
     chart_stat_1_label:"FIX FOR THE COHORT", chart_stat_1_value:"$1,440, and that's it, forever",
@@ -793,10 +899,12 @@ const I18N = {
   },
   uz: {
     nav_case:"Keys", nav_models:"RS vs Fix", nav_offer:"Nima beramiz", nav_contacts:"Aloqa", nav_cta:"Telegram orqali yozing",
+    nav_calc:"Kalkulyator",
     hero_badge:"MOSTBET PARTNERS · HAMKORLIK DASTURI",
     hero_title:"Bitta o'yinchi, oylar va yillar davomida daromad",
     hero_subtitle:"Kanalni yoki striming yolg'iz olib borsangiz ham, bu yetarli. O'yinchini bir marta olib kelasiz, u o'ynagan har oy daromad olasiz.",
     hero_cta_primary:"Hamkor bo'lish", hero_cta_secondary:"Keysni ko'rish ↓",
+    hero_cta_calc:"Daromadingni hisobla ↓",
     hero_chip_1:"Nishada so'rov bo'yicha TOP", hero_chip_2:"Har kuni to'lov", hero_chip_3:"Manfiy o'tkazmasiz",
     hero_stat_label:"Har bir o'yinchidan RevShare", hero_stat_value:"Umrbod", hero_stat_note:"Yuqori, chegarasiz RS, har oy o'sadi",
     hero_stat_foot_1:"To'lovlar · har kuni", hero_stat_foot_2:"Chegarasiz",
@@ -808,6 +916,15 @@ const I18N = {
     case_shot_badge:"Haqiqiy skrinshot · hamkor kabineti", case_shot_alt:"Mostbet Partners hamkor kabineti skrinshoti",
     case_real_stat1_label:"JALB QILINGAN O'YINCHILAR", case_real_stat2_label:"O'YINCHILAR DEPOZITI HAJMI", case_real_stat3_label:"HAMKOR DAROMADI, O'SISHDA DAVOM ETMOQDA",
     case_real_note:"Hamkorlarimizdan birining kabineti skrinshoti. Haqiqiy raqamlar, illyustratsiya emas.",
+    calc_kicker:"DAROMAD KALKULYATORI", calc_title:"RS'da qancha daromad topishing mumkin",
+    calc_subtitle:"O'z raqamlaringni kiriting, oylik kutilayotgan daromading va yillik potensialingni hisoblab beramiz.",
+    calc_label_geo:"Auditoriyangning GEOsi",
+    calc_geo_tier1:"Yevropa / AQSH / Avstraliya", calc_geo_cis:"MDH / Markaziy Osiyo", calc_geo_latam:"Lotin Amerikasi", calc_geo_sasia:"Hindiston / Bangladesh / Janubiy Osiyo", calc_geo_mena:"Yaqin Sharq / Afrika",
+    calc_label_subs:"Obunachilar / guruh a'zolari", calc_label_views:"Post / strim uchun ko'rishlar",
+    calc_result_month_label:"Kutilayotgan oylik daromad", calc_result_month_note:"Muntazam post qilsang, har oy yangi o'yinchilardan RS",
+    calc_result_year_label:"12 oy davomidagi potensial", calc_result_year_note:"Auditoriya o'sishi va faol o'yinchilardan to'plangan RS bilan",
+    calc_disclaimer:"Hisob taxminiy, nishadagi o'rtacha ko'rsatkichlarga asoslangan. Real daromad auditoriya faolligi, GEO va kontent sifatiga bog'liq.",
+    calc_cta:"Hamkor bo'l va shu pulni ishlab topishni boshla",
     chart_legend_rs:"RevShare (o'sib boruvchi)", chart_legend_fix:"CPA / Fix (bir martalik)",
     chart_caption:"Bitta o'yinchilar guruhidan jamlangan daromad, $ · gorizontal, oylar (1–12)",
     chart_stat_1_label:"GURUH UCHUN FIX", chart_stat_1_value:"$1 440, va tamom, boshqa yo'q",
@@ -847,10 +964,12 @@ const I18N = {
   },
   ar: {
     nav_case:"دراسة حالة", nav_models:"RS مقابل Fix", nav_offer:"ماذا نقدّم", nav_contacts:"التواصل", nav_cta:"راسلنا عبر تيليجرام",
+    nav_calc:"الحاسبة",
     hero_badge:"MOSTBET PARTNERS · برنامج الشراكة",
     hero_title:"لاعب واحد، دخل يمتد لأشهر وسنوات",
     hero_subtitle:"حتى لو كنت تدير قناتك أو بثّك بمفردك، هذا يكفي. تجلب اللاعب مرة واحدة، وتربح منه كل شهر يستمر فيه باللعب.",
     hero_cta_primary:"كن شريكاً", hero_cta_secondary:"شاهد دراسة الحالة ↓",
+    hero_cta_calc:"احسب دخلك ↓",
     hero_chip_1:"الأعلى طلباً في المجال", hero_chip_2:"دفعات يومية", hero_chip_3:"بدون ترحيل سلبي للخسائر",
     hero_stat_label:"RevShare من كل لاعب", hero_stat_value:"مدى الحياة", hero_stat_note:"نسبة RS مرتفعة وبلا سقف، تنمو كل شهر",
     hero_stat_foot_1:"دفعات · كل يوم", hero_stat_foot_2:"بلا سقف",
@@ -862,6 +981,15 @@ const I18N = {
     case_shot_badge:"لقطة شاشة حقيقية · لوحة تحكم شريك", case_shot_alt:"لقطة شاشة للوحة تحكم شريك في Mostbet Partners",
     case_real_stat1_label:"اللاعبون الذين تم جلبهم", case_real_stat2_label:"حجم إيداعات اللاعبين", case_real_stat3_label:"دخل الشريك، ما زال في تزايد",
     case_real_note:"لقطة شاشة لأحد لوحات تحكم شركائنا. أرقام حقيقية، وليست توضيحية.",
+    calc_kicker:"حاسبة الدخل", calc_title:"كم يمكنك أن تكسب مع RS",
+    calc_subtitle:"أدخل أرقامك، وسنحسب لك الدخل الشهري المتوقع وإمكانياتك خلال سنة.",
+    calc_label_geo:"جغرافية جمهورك",
+    calc_geo_tier1:"أوروبا / أمريكا / أستراليا", calc_geo_cis:"رابطة الدول المستقلة / آسيا الوسطى", calc_geo_latam:"أمريكا اللاتينية", calc_geo_sasia:"الهند / بنغلاديش / جنوب آسيا", calc_geo_mena:"الشرق الأوسط / أفريقيا",
+    calc_label_subs:"المشتركون / أعضاء المجموعة", calc_label_views:"المشاهدات لكل منشور / بث",
+    calc_result_month_label:"الدخل الشهري المتوقع", calc_result_month_note:"مع نشر منتظم، RS من لاعبين جدد كل شهر",
+    calc_result_year_label:"الإمكانية خلال 12 شهراً", calc_result_year_note:"مع نمو جمهورك وتراكم RS من اللاعبين النشطين",
+    calc_disclaimer:"هذا تقدير مبني على متوسط الأداء في هذا المجال. الدخل الفعلي يعتمد على تفاعل الجمهور والجغرافيا وجودة المحتوى.",
+    calc_cta:"انضم كشريك وابدأ بكسب هذا المال",
     chart_legend_rs:"RevShare (تراكمي)", chart_legend_fix:"CPA / Fix (دفعة واحدة)",
     chart_caption:"الدخل التراكمي من مجموعة لاعبين واحدة، بالدولار · المحور الأفقي، الأشهر (1–12)",
     chart_stat_1_label:"FIX للمجموعة", chart_stat_1_value:"1,440 دولار، وهذا كل شيء، إلى الأبد",
@@ -901,10 +1029,12 @@ const I18N = {
   },
   hi: {
     nav_case:"केस स्टडी", nav_models:"RS vs Fix", nav_offer:"हम क्या देते हैं", nav_contacts:"संपर्क", nav_cta:"Telegram पर लिखें",
+    nav_calc:"कैलकुलेटर",
     hero_badge:"MOSTBET PARTNERS · एफिलिएट प्रोग्राम",
     hero_title:"एक खिलाड़ी लाओ, महीनों और सालों तक कमाओ",
     hero_subtitle:"भले ही तुम अकेले चैनल चलाते हो या स्ट्रीम करते हो, यह काफी है। एक बार खिलाड़ी लाओ, जब तक वह खेलता रहे, हर महीने कमाई मिलती रहेगी।",
     hero_cta_primary:"पार्टनर बनें", hero_cta_secondary:"केस स्टडी देखें ↓",
+    hero_cta_calc:"अपनी आय निकालो ↓",
     hero_chip_1:"निच में सबसे ज़्यादा खोजा जाने वाला ब्रांड", hero_chip_2:"हर दिन पेआउट", hero_chip_3:"नेगेटिव कैरीओवर नहीं",
     hero_stat_label:"हर खिलाड़ी से RevShare", hero_stat_value:"जीवनभर", hero_stat_note:"ऊँचा, बिना सीमा वाला RS, हर महीने बढ़ता है",
     hero_stat_foot_1:"पेआउट · हर दिन", hero_stat_foot_2:"कोई सीमा नहीं",
@@ -916,6 +1046,15 @@ const I18N = {
     case_shot_badge:"असली स्क्रीनशॉट · पार्टनर डैशबोर्ड", case_shot_alt:"Mostbet Partners के एक पार्टनर डैशबोर्ड का स्क्रीनशॉट",
     case_real_stat1_label:"लाए गए खिलाड़ी", case_real_stat2_label:"खिलाड़ियों की डिपॉज़िट राशि", case_real_stat3_label:"पार्टनर की कमाई, अभी भी बढ़ रही है",
     case_real_note:"हमारे एक पार्टनर के डैशबोर्ड का स्क्रीनशॉट। असली आँकड़े, कोई इलस्ट्रेशन नहीं।",
+    calc_kicker:"आय कैलकुलेटर", calc_title:"RS पर तुम कितना कमा सकते हो",
+    calc_subtitle:"अपने आँकड़े डालो, हम तुम्हारी अनुमानित मासिक आय और साल भर की संभावना निकाल देंगे।",
+    calc_label_geo:"तुम्हारी ऑडियंस का GEO",
+    calc_geo_tier1:"यूरोप / अमेरिका / ऑस्ट्रेलिया", calc_geo_cis:"CIS / मध्य एशिया", calc_geo_latam:"लैटिन अमेरिका", calc_geo_sasia:"भारत / बांग्लादेश / दक्षिण एशिया", calc_geo_mena:"मध्य पूर्व / अफ़्रीका",
+    calc_label_subs:"सब्सक्राइबर / ग्रुप मेंबर", calc_label_views:"पोस्ट/स्ट्रीम पर व्यूज़",
+    calc_result_month_label:"अनुमानित मासिक आय", calc_result_month_note:"लगातार पोस्ट करने पर, हर महीने नए खिलाड़ियों से RS",
+    calc_result_year_label:"12 महीनों की संभावना", calc_result_year_note:"ऑडियंस बढ़ने और सक्रिय खिलाड़ियों से जमा RS के साथ",
+    calc_disclaimer:"यह अनुमान इस निच के औसत प्रदर्शन पर आधारित है। असली आय ऑडियंस एंगेजमेंट, GEO और कंटेंट क्वालिटी पर निर्भर करती है।",
+    calc_cta:"पार्टनर बनो और यह पैसा कमाना शुरू करो",
     chart_legend_rs:"RevShare (संचयी)", chart_legend_fix:"CPA / Fix (एकमुश्त)",
     chart_caption:"एक खिलाड़ी कोहॉर्ट से संचित कमाई, $ · क्षैतिज अक्ष, महीने (1–12)",
     chart_stat_1_label:"कोहॉर्ट के लिए FIX", chart_stat_1_value:"$1,440, बस इतना ही, हमेशा के लिए",
@@ -955,10 +1094,12 @@ const I18N = {
   },
   es: {
     nav_case:"Caso de éxito", nav_models:"RS vs Fix", nav_offer:"Qué te damos", nav_contacts:"Contacto", nav_cta:"Escribir por Telegram",
+    nav_calc:"Calculadora",
     hero_badge:"MOSTBET PARTNERS · PROGRAMA DE AFILIADOS",
     hero_title:"Trae un jugador, cobra por meses y años",
     hero_subtitle:"Aunque manejes tu canal o hagas streaming tú solo, con eso basta. Trae un jugador una vez, y cobras cada mes mientras siga jugando.",
     hero_cta_primary:"Hazte Partner", hero_cta_secondary:"Ver el caso ↓",
+    hero_cta_calc:"Calcula tu ingreso ↓",
     hero_chip_1:"TOP en demanda del nicho", hero_chip_2:"Pagos diarios", hero_chip_3:"Sin arrastre de saldo negativo",
     hero_stat_label:"RevShare de cada jugador", hero_stat_value:"De por vida", hero_stat_note:"RS alto, sin techo, crece cada mes",
     hero_stat_foot_1:"Pagos · todos los días", hero_stat_foot_2:"Sin límite",
@@ -970,6 +1111,15 @@ const I18N = {
     case_shot_badge:"Captura real · panel de un partner", case_shot_alt:"Captura de pantalla del panel de un partner de Mostbet Partners",
     case_real_stat1_label:"JUGADORES TRAÍDOS", case_real_stat2_label:"VOLUMEN DE DEPÓSITOS DE JUGADORES", case_real_stat3_label:"INGRESO DEL PARTNER, SIGUE CRECIENDO",
     case_real_note:"Captura del panel de uno de nuestros partners. Cifras reales, no una ilustración.",
+    calc_kicker:"CALCULADORA DE INGRESOS", calc_title:"Cuánto podrías ganar con RS",
+    calc_subtitle:"Ingresa tus números, calculamos tu ingreso mensual esperado y tu potencial en un año.",
+    calc_label_geo:"GEO de tu audiencia",
+    calc_geo_tier1:"Europa / EE. UU. / Australia", calc_geo_cis:"CEI / Asia Central", calc_geo_latam:"Latinoamérica", calc_geo_sasia:"India / Bangladesh / Sur de Asia", calc_geo_mena:"Medio Oriente / África",
+    calc_label_subs:"Suscriptores / miembros del grupo", calc_label_views:"Vistas por publicación / stream",
+    calc_result_month_label:"Ingreso mensual esperado", calc_result_month_note:"Publicando de forma constante, RS de jugadores nuevos cada mes",
+    calc_result_year_label:"Potencial en 12 meses", calc_result_year_note:"Con el crecimiento de tu audiencia y el RS acumulado de jugadores activos",
+    calc_disclaimer:"Esto es una estimación basada en el rendimiento promedio del nicho. El ingreso real depende del engagement de tu audiencia, el GEO y la calidad del contenido.",
+    calc_cta:"Hazte Partner y empieza a ganar este dinero",
     chart_legend_rs:"RevShare (acumulado)", chart_legend_fix:"CPA / Fix (pago único)",
     chart_caption:"Ingreso acumulado de una cohorte de jugadores, $ · eje horizontal, meses (1–12)",
     chart_stat_1_label:"FIX POR LA COHORTE", chart_stat_1_value:"$1,440, y eso es todo, para siempre",
@@ -1009,10 +1159,12 @@ const I18N = {
   },
   pt: {
     nav_case:"Case de sucesso", nav_models:"RS vs Fix", nav_offer:"O que oferecemos", nav_contacts:"Contato", nav_cta:"Falar no Telegram",
+    nav_calc:"Calculadora",
     hero_badge:"MOSTBET PARTNERS · PROGRAMA DE AFILIADOS",
     hero_title:"Traga um jogador, receba por meses e anos",
     hero_subtitle:"Mesmo que você toque seu canal ou faça streaming sozinho, isso já basta. Traga um jogador uma vez, e você recebe todo mês enquanto ele continuar jogando.",
     hero_cta_primary:"Seja um Parceiro", hero_cta_secondary:"Ver o case ↓",
+    hero_cta_calc:"Calcule seu ganho ↓",
     hero_chip_1:"TOP em buscas no nicho", hero_chip_2:"Pagamentos diários", hero_chip_3:"Sem arrasto de saldo negativo",
     hero_stat_label:"RevShare de cada jogador", hero_stat_value:"Vitalício", hero_stat_note:"RS alto, sem teto, cresce todo mês",
     hero_stat_foot_1:"Pagamentos · todo dia", hero_stat_foot_2:"Sem limite",
@@ -1024,6 +1176,15 @@ const I18N = {
     case_shot_badge:"Print real · painel de um parceiro", case_shot_alt:"Print do painel de um parceiro da Mostbet Partners",
     case_real_stat1_label:"JOGADORES TRAZIDOS", case_real_stat2_label:"VOLUME DE DEPÓSITOS DOS JOGADORES", case_real_stat3_label:"GANHO DO PARCEIRO, AINDA CRESCENDO",
     case_real_note:"Print do painel de um dos nossos parceiros. Números reais, não é ilustração.",
+    calc_kicker:"CALCULADORA DE GANHOS", calc_title:"Quanto você pode ganhar com RS",
+    calc_subtitle:"Coloque seus números, calculamos seu ganho mensal esperado e seu potencial em um ano.",
+    calc_label_geo:"GEO da sua audiência",
+    calc_geo_tier1:"Europa / EUA / Austrália", calc_geo_cis:"CEI / Ásia Central", calc_geo_latam:"América Latina", calc_geo_sasia:"Índia / Bangladesh / Sul da Ásia", calc_geo_mena:"Oriente Médio / África",
+    calc_label_subs:"Inscritos / membros do grupo", calc_label_views:"Visualizações por post / live",
+    calc_result_month_label:"Ganho mensal esperado", calc_result_month_note:"Postando de forma constante, RS de novos jogadores todo mês",
+    calc_result_year_label:"Potencial em 12 meses", calc_result_year_note:"Com o crescimento da audiência e o RS acumulado de jogadores ativos",
+    calc_disclaimer:"Esta é uma estimativa baseada no desempenho médio do nicho. O ganho real depende do engajamento da audiência, do GEO e da qualidade do conteúdo.",
+    calc_cta:"Seja um Parceiro e comece a ganhar esse dinheiro",
     chart_legend_rs:"RevShare (acumulado)", chart_legend_fix:"CPA / Fix (pagamento único)",
     chart_caption:"Ganho acumulado de uma coorte de jogadores, $ · eixo horizontal, meses (1–12)",
     chart_stat_1_label:"FIX DA COORTE", chart_stat_1_value:"$1.440, e é só isso, para sempre",
@@ -1063,10 +1224,12 @@ const I18N = {
   },
   bn: {
     nav_case:"কেস স্টাডি", nav_models:"RS vs Fix", nav_offer:"আমরা কী দিই", nav_contacts:"যোগাযোগ", nav_cta:"টেলিগ্রামে লিখুন",
+    nav_calc:"ক্যালকুলেটর",
     hero_badge:"MOSTBET PARTNERS · অ্যাফিলিয়েট প্রোগ্রাম",
     hero_title:"একজন খেলোয়াড় আনুন, মাস আর বছর ধরে আয় করুন",
     hero_subtitle:"তুমি একা চ্যানেল চালাও বা স্ট্রিম করো, তাতেই যথেষ্ট। একবার খেলোয়াড় আনলে, যতদিন সে খেলবে ততদিন প্রতি মাসে আয় হতে থাকবে।",
     hero_cta_primary:"পার্টনার হোন", hero_cta_secondary:"কেস স্টাডি দেখুন ↓",
+    hero_cta_calc:"তোমার আয় হিসাব করো ↓",
     hero_chip_1:"নিশে চাহিদায় শীর্ষে", hero_chip_2:"প্রতিদিন পেআউট", hero_chip_3:"নেগেটিভ ক্যারিওভার নেই",
     hero_stat_label:"প্রতিটি খেলোয়াড় থেকে RevShare", hero_stat_value:"আজীবন", hero_stat_note:"উঁচু, সীমাহীন RS, প্রতি মাসে বাড়ে",
     hero_stat_foot_1:"পেআউট · প্রতিদিন", hero_stat_foot_2:"কোনো সীমা নেই",
@@ -1078,6 +1241,15 @@ const I18N = {
     case_shot_badge:"আসল স্ক্রিনশট · পার্টনার ড্যাশবোর্ড", case_shot_alt:"Mostbet Partners এর একজন পার্টনার ড্যাশবোর্ডের স্ক্রিনশট",
     case_real_stat1_label:"আনা খেলোয়াড়", case_real_stat2_label:"খেলোয়াড়দের ডিপোজিট পরিমাণ", case_real_stat3_label:"পার্টনারের আয়, এখনো বাড়ছে",
     case_real_note:"আমাদের এক পার্টনারের ড্যাশবোর্ডের স্ক্রিনশট। আসল সংখ্যা, কোনো চিত্র নয়।",
+    calc_kicker:"আয় ক্যালকুলেটর", calc_title:"RS তে তুমি কত আয় করতে পারো",
+    calc_subtitle:"তোমার সংখ্যা দাও, আমরা তোমার আনুমানিক মাসিক আয় আর বছরের সম্ভাবনা বের করে দেব।",
+    calc_label_geo:"তোমার অডিয়েন্সের GEO",
+    calc_geo_tier1:"ইউরোপ / যুক্তরাষ্ট্র / অস্ট্রেলিয়া", calc_geo_cis:"CIS / মধ্য এশিয়া", calc_geo_latam:"লাতিন আমেরিকা", calc_geo_sasia:"ভারত / বাংলাদেশ / দক্ষিণ এশিয়া", calc_geo_mena:"মধ্যপ্রাচ্য / আফ্রিকা",
+    calc_label_subs:"সাবস্ক্রাইবার / গ্রুপ সদস্য", calc_label_views:"পোস্ট/স্ট্রিমে ভিউ",
+    calc_result_month_label:"আনুমানিক মাসিক আয়", calc_result_month_note:"নিয়মিত পোস্ট করলে, প্রতি মাসে নতুন খেলোয়াড় থেকে RS",
+    calc_result_year_label:"12 মাসের সম্ভাবনা", calc_result_year_note:"অডিয়েন্স বৃদ্ধি আর সক্রিয় খেলোয়াড়দের থেকে জমা RS সহ",
+    calc_disclaimer:"এই হিসাব নিশের গড় পারফরম্যান্সের ওপর ভিত্তি করে একটি অনুমান। আসল আয় অডিয়েন্স এনগেজমেন্ট, GEO আর কনটেন্টের মান অনুযায়ী পরিবর্তিত হয়।",
+    calc_cta:"পার্টনার হও আর এই টাকা আয় করা শুরু করো",
     chart_legend_rs:"RevShare (সঞ্চিত)", chart_legend_fix:"CPA / Fix (একবারের)",
     chart_caption:"একটি খেলোয়াড় কোহোর্ট থেকে সঞ্চিত আয়, $ · অনুভূমিক অক্ষ, মাস (1–12)",
     chart_stat_1_label:"কোহোর্টের জন্য FIX", chart_stat_1_value:"$1,440, এটাই সব, চিরকালের জন্য",
@@ -1117,10 +1289,12 @@ const I18N = {
   },
   fr: {
     nav_case:"Étude de cas", nav_models:"RS vs Fix", nav_offer:"Ce qu'on te donne", nav_contacts:"Contact", nav_cta:"Écrire sur Telegram",
+    nav_calc:"Calculateur",
     hero_badge:"MOSTBET PARTNERS · PROGRAMME D'AFFILIATION",
     hero_title:"Un joueur amené, un revenu pendant des mois et des années",
     hero_subtitle:"Même si tu gères ta chaîne ou tu streames tout seul, ça suffit. Amène un joueur une fois, et tu gagnes chaque mois tant qu'il continue à jouer.",
     hero_cta_primary:"Devenir Partenaire", hero_cta_secondary:"Voir l'étude de cas ↓",
+    hero_cta_calc:"Calcule ton revenu ↓",
     hero_chip_1:"TOP de la demande dans la niche", hero_chip_2:"Paiements quotidiens", hero_chip_3:"Pas de report de solde négatif",
     hero_stat_label:"RevShare sur chaque joueur", hero_stat_value:"À vie", hero_stat_note:"RS élevé, sans plafond, grandit chaque mois",
     hero_stat_foot_1:"Paiements · tous les jours", hero_stat_foot_2:"Sans plafond",
@@ -1132,6 +1306,15 @@ const I18N = {
     case_shot_badge:"Vraie capture · tableau de bord d'un partenaire", case_shot_alt:"Capture d'écran du tableau de bord d'un partenaire Mostbet Partners",
     case_real_stat1_label:"JOUEURS AMENÉS", case_real_stat2_label:"VOLUME DE DÉPÔTS DES JOUEURS", case_real_stat3_label:"REVENU DU PARTENAIRE, TOUJOURS EN HAUSSE",
     case_real_note:"Capture d'écran du tableau de bord d'un de nos partenaires. De vrais chiffres, pas une illustration.",
+    calc_kicker:"CALCULATEUR DE REVENU", calc_title:"Combien tu pourrais gagner avec le RS",
+    calc_subtitle:"Entre tes chiffres, on calcule ton revenu mensuel estimé et ton potentiel sur un an.",
+    calc_label_geo:"GEO de ton audience",
+    calc_geo_tier1:"Europe / États-Unis / Australie", calc_geo_cis:"CEI / Asie centrale", calc_geo_latam:"Amérique latine", calc_geo_sasia:"Inde / Bangladesh / Asie du Sud", calc_geo_mena:"Moyen-Orient / Afrique",
+    calc_label_subs:"Abonnés / membres du groupe", calc_label_views:"Vues par post / stream",
+    calc_result_month_label:"Revenu mensuel estimé", calc_result_month_note:"En publiant régulièrement, du RS sur de nouveaux joueurs chaque mois",
+    calc_result_year_label:"Potentiel sur 12 mois", calc_result_year_note:"Avec la croissance de ton audience et le RS accumulé des joueurs actifs",
+    calc_disclaimer:"C'est une estimation basée sur la performance moyenne dans la niche. Le revenu réel dépend de l'engagement de ton audience, de la GEO et de la qualité du contenu.",
+    calc_cta:"Deviens Partenaire et commence à gagner cet argent",
     chart_legend_rs:"RevShare (cumulé)", chart_legend_fix:"CPA / Fix (unique)",
     chart_caption:"Revenu cumulé d'une cohorte de joueurs, $ · axe horizontal, mois (1–12)",
     chart_stat_1_label:"FIX POUR LA COHORTE", chart_stat_1_value:"$1 440, et c'est tout, pour toujours",
@@ -1206,6 +1389,7 @@ langCurrentBtn.addEventListener('click', function(e){
 document.getElementById('langMenu').addEventListener('click', function(e){
   const btn = e.target.closest('.lang-opt');
   if(!btn) return;
+  window.__mbUserPicked = true;
   applyLang(btn.getAttribute('data-lang'));
   langSwitchEl.classList.remove('open');
   langCurrentBtn.setAttribute('aria-expanded', 'false');
@@ -1307,7 +1491,116 @@ function renderChart(){
   }
 }
 
+/* ---------- Income calculator ----------
+   Estimate only, not a promise. Assumptions are generous-but-plausible
+   (upper end of realistic ranges for the niche), not fabricated numbers:
+   - CALC_GEO_RATE: average partner RS earnings per depositing player per
+     month, already net of the underlying RS% and NGR assumptions, tiered
+     by GEO purchasing power.
+   - CALC_CTR / CALC_REG_RATE / CALC_FTD_RATE: click -> registration ->
+     first-deposit funnel, set at the optimistic end of typical affiliate
+     funnel benchmarks for an engaged niche audience.
+   - CALC_SUB_CLICK_RATE: a smaller passive click rate from the raw
+     subscriber/member count (bio link, pinned post), on top of per-post views.
+   - CALC_YEAR_MULTIPLIER: 12 straight months plus a modest uplift for
+     audience growth and RS still coming in from earlier months' players,
+     not a fantasy multiplier. */
+const CALC_GEO_RATE = { tier1:28, cis:12, latam:10, sasia:6, mena:8 };
+const CALC_CTR = 0.05;
+const CALC_REG_RATE = 0.38;
+const CALC_FTD_RATE = 0.32;
+const CALC_SUB_CLICK_RATE = 0.006;
+const CALC_YEAR_MULTIPLIER = 15;
+
+function calcAnimateValue(el, start, end, duration){
+  if(el.__calcAnim) cancelAnimationFrame(el.__calcAnim);
+  const startTime = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+  function step(now){
+    const p = Math.min(1, (now - startTime) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(start + (end - start) * eased);
+    el.textContent = '$' + val.toLocaleString('en-US');
+    if(p < 1){ el.__calcAnim = requestAnimationFrame(step); }
+  }
+  el.__calcAnim = requestAnimationFrame(step);
+}
+
+function recalcIncome(){
+  const geoSel = document.getElementById('calcGeo');
+  const subsEl = document.getElementById('calcSubs');
+  const viewsEl = document.getElementById('calcViews');
+  const monthEl = document.getElementById('calcMonthValue');
+  const yearEl = document.getElementById('calcYearValue');
+  if(!geoSel || !subsEl || !viewsEl || !monthEl || !yearEl) return;
+
+  const rate = CALC_GEO_RATE[geoSel.value] || CALC_GEO_RATE.cis;
+  const subs = Math.max(0, Number(subsEl.value) || 0);
+  const views = Math.max(0, Number(viewsEl.value) || 0);
+
+  const clicks = views * CALC_CTR + subs * CALC_SUB_CLICK_RATE;
+  const regs = clicks * CALC_REG_RATE;
+  const ftds = regs * CALC_FTD_RATE;
+
+  const monthIncome = Math.round(ftds * rate);
+  const yearIncome = Math.round(monthIncome * CALC_YEAR_MULTIPLIER);
+
+  const prevMonth = Number(monthEl.getAttribute('data-val') || 0);
+  const prevYear = Number(yearEl.getAttribute('data-val') || 0);
+  monthEl.setAttribute('data-val', monthIncome);
+  yearEl.setAttribute('data-val', yearIncome);
+  calcAnimateValue(monthEl, prevMonth, monthIncome, 500);
+  calcAnimateValue(yearEl, prevYear, yearIncome, 650);
+}
+
+['calcGeo','calcSubs','calcViews'].forEach(function(id){
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', recalcIncome);
+});
+recalcIncome();
+
 /* ---------- init ---------- */
+/* ---------- Country -> language map, for IP-based refinement ---------- */
+function countryToLang(cc){
+  if(!cc) return null;
+  cc = String(cc).toUpperCase();
+  const MAP = {
+    BR:'pt',
+    MX:'es', AR:'es', CO:'es', CL:'es', PE:'es', VE:'es', EC:'es', GT:'es', CU:'es', BO:'es',
+    DO:'es', HN:'es', PY:'es', SV:'es', NI:'es', CR:'es', PA:'es', UY:'es', PR:'es', ES:'es', GQ:'es',
+    IN:'hi',
+    BD:'bn',
+    FR:'fr',
+    UZ:'uz',
+    MA:'ar', DZ:'ar', TN:'ar', EG:'ar', SA:'ar', AE:'ar', QA:'ar', KW:'ar', BH:'ar', OM:'ar',
+    JO:'ar', LB:'ar', SY:'ar', IQ:'ar', YE:'ar', LY:'ar', SD:'ar',
+    RU:'ru', BY:'ru', KZ:'ru', KG:'ru', TJ:'ru',
+    GB:'en', US:'en', AU:'en', CA:'en', IE:'en', NZ:'en'
+  };
+  return MAP[cc] || null;
+}
+
+function fetchWithTimeout(url, ms){
+  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const opts = ctrl ? {signal: ctrl.signal} : {};
+  const timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, ms) : null;
+  return fetch(url, opts).then(function(r){ if(timer) clearTimeout(timer); return r; }, function(err){ if(timer) clearTimeout(timer); throw err; });
+}
+
+function detectCountryByIP(){
+  return fetchWithTimeout('https://ipwho.is/', 2500)
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if(j && j.success !== false && j.country_code) return j.country_code;
+      throw new Error('no country from primary geo-IP service');
+    })
+    .catch(function(){
+      return fetchWithTimeout('https://get.geojs.io/v1/ip/country.json', 2500)
+        .then(function(r){ return r.json(); })
+        .then(function(j){ return (j && j.country) ? j.country : null; })
+        .catch(function(){ return null; });
+    });
+}
+
 (function init(){
   const nav = (navigator.language || 'ru').toLowerCase();
   let initial = 'ru';
@@ -1321,6 +1614,18 @@ function renderChart(){
   else if(nav.indexOf('fr') === 0) initial = 'fr';
   else if(nav.indexOf('ru') === 0) initial = 'ru';
   applyLang(initial);
+
+  /* Refine using IP-based geolocation once it resolves, unless the visitor
+     already picked a language themselves in the meantime. Fails silently
+     (keeps the browser-language guess) if the geo-IP lookup is blocked,
+     rate-limited or times out. */
+  detectCountryByIP().then(function(cc){
+    if(window.__mbUserPicked) return;
+    const geoLang = countryToLang(cc);
+    if(geoLang && geoLang !== window.__mbLang){
+      applyLang(geoLang);
+    }
+  }).catch(function(){ /* no-op: keep the browser-language guess */ });
 })();
 </script>
 
